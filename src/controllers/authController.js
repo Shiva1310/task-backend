@@ -50,21 +50,10 @@ export const loginUser = async (req, res) => {
     const accessToken = jwt.sign(
       { id: user._id },
       process.env.JWT_SECRET,
-      { expiresIn: "50m" }
+      { expiresIn: "1d" }
     );
 
-    const refreshToken = jwt.sign(
-      { id: user._id },
-      process.env.JWT_REFRESH_SECRET,
-      { expiresIn: "7d" }
-    );
-
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    
 
     res.json({ accessToken });
   } catch (err) {
@@ -73,23 +62,4 @@ export const loginUser = async (req, res) => {
   }
 };
 
-export const refreshToken = (req, res) => {
-  try {
-    const token = req.cookies.refreshToken;
-    if (!token) return res.sendStatus(401);
 
-    jwt.verify(token, process.env.JWT_REFRESH_SECRET, (err, user) => {
-      if (err) return res.sendStatus(403);
-
-      const accessToken = jwt.sign(
-        { id: user.id },
-        process.env.JWT_SECRET,
-        { expiresIn: "15m" }
-      );
-      res.json({ accessToken });
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ msg: "Server error" });
-  }
-};

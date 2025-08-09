@@ -6,6 +6,5 @@ import { registerValidation, loginValidation } from "../validations/authValidati
 const router = express.Router();
 router.post("/register", validate(registerValidation), registerUser);
 router.post("/login", validate(loginValidation), loginUser);
-router.post("/refresh", refreshToken);
 
 export default router;
