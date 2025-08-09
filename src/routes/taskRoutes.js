@@ -10,6 +10,6 @@ router.post("/createTask", verifyToken,validate(createTaskValidation), createTas
 router.get("/getTaskById", verifyToken, getTask);
 router.get("/getAllTask", verifyToken, getTasks);
 router.delete("/deleteTask", verifyToken,validate(updateTaskValidation), deleteTask);
-router.put("updateTask",verifyToken,updateTask)
+router.put("/updateTask",verifyToken,updateTask)
 
 export default router;

@@ -2,15 +2,7 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-const isValidEmail = (email) => {
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return re.test(String(email).toLowerCase());
-};
-const isValidPassword = (password) => {
-  // At least one uppercase, one lowercase, one number, one special character, min 8 chars
-  const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-  return re.test(password);
-};
+
 export const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -19,14 +11,7 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ msg: "All fields are required" });
     }
 
-    if (!isValidEmail(email)) {
-      return res.status(400).json({ msg: "Invalid email format" });
-    }
-if (!isValidPassword(password)) {
-      return res.status(400).json({
-        msg: "Password must be at least 8 characters long, include uppercase, lowercase, number, and special character"
-      });
-    }
+   
     const existing = await User.findOne({ email });
     if (existing) {
       return res.status(400).json({ msg: "User already exists" });
