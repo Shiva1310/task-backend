@@ -2,7 +2,7 @@ import Task from "../models/Task.js";
 
 export const createTask = async (req, res) => {
   try {
-    const task = new Task({ ...req.body, userId: req.user._id });
+    const task = new Task({ ...req.body, userId: req.user.id });
     await task.save();
     res.status(201).json(task);
   } catch (error) {
@@ -13,7 +13,7 @@ export const createTask = async (req, res) => {
 export const getTasks = async (req, res) => {
   try {
     const { status, dueDate, page = 1, limit = 10 } = req.query;
-    const query = { userId: req.user._id };
+    const query = { userId: req.user.id };
 
     if (status) query.status = status;
     if (dueDate) query.dueDate = { $lte: new Date(dueDate) };
@@ -36,8 +36,9 @@ export const getTasks = async (req, res) => {
 };
 
 export const getTask = async (req, res) => {
+
   try {
-    const task = await Task.findOne({ _id: req.params.id, userId: req.user._id });
+    const task = await Task.findOne({ _id: req.params.id, userId: req.user.id });
     if (!task) return res.status(404).json({ error: "Task not found" });
     res.json(task);
   } catch (error) {
@@ -46,9 +47,11 @@ export const getTask = async (req, res) => {
 };
 
 export const updateTask = async (req, res) => {
+            console.log("req...........", req)
+
   try {
     const task = await Task.findOneAndUpdate(
-      { _id: req.params.id, userId: req.user._id },
+      { _id: req.query.id, userId: req.user.id },
       req.body,
       { new: true, runValidators: true }
     );
@@ -62,8 +65,8 @@ export const updateTask = async (req, res) => {
 export const deleteTask = async (req, res) => {
   try {
     const task = await Task.findOneAndDelete({
-      _id: req.params.id,
-      userId: req.user._id,
+      _id: req.query.id,
+      userId: req.user.id,
     });
     if (!task) return res.status(404).json({ error: "Task not found" });
     res.json({ message: "Task deleted" });
